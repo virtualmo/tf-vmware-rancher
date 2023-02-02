@@ -1,0 +1,20 @@
+#cloud-config
+groups:
+- staff
+hostname: "${guest_hostname}"
+set_hostname:
+- "${guest_hostname}"
+users:
+- lock_passwd: true
+  name: ${guest_user}
+  shell: /bin/bash
+  ssh_authorized_keys:
+  - |
+      ${guest_ssh_key}
+  sudo: ALL=(ALL) NOPASSWD:ALL
+%{ if rke_version == "rke1" }
+runcmd:
+- sudo curl -sL https://releases.rancher.com/install-docker/${docker_version}.sh | sh
+- sudo groupadd docker
+- sudo usermod -aG docker ${guest_user}
+%{ endif }
