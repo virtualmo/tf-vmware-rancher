@@ -32,3 +32,9 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore rke kube config
+kube_config_cluster.yml
+
+# Ignore terraform lock
+.terraform.*
