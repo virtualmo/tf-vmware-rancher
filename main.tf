@@ -1,8 +1,21 @@
+terraform {
+  required_providers {
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "~> 2.0"
+    }
+  }
+}
+
 provider "vsphere" {
   user                 = var.vsphere_user
   password             = var.vsphere_password
   vsphere_server       = var.vsphere_server
   allow_unverified_ssl = true
+}
+
+provider "digitalocean" {
+  token = var.do_token
 }
 
 data "vsphere_datacenter" "datacenter" {
@@ -69,7 +82,7 @@ resource "vsphere_virtual_machine" "all-nodes" {
 
   disk {
     label            = "disk0"
-    size             = data.vsphere_virtual_machine.source_template.disks[0].size
+    size             = var.guest_all_disk
     eagerly_scrub    = data.vsphere_virtual_machine.source_template.disks[0].eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.source_template.disks[0].thin_provisioned
   }
@@ -128,7 +141,7 @@ resource "vsphere_virtual_machine" "etcd-nodes" {
 
   disk {
     label            = "disk0"
-    size             = data.vsphere_virtual_machine.source_template.disks[0].size
+    size             = var.guest_etcd_disk
     eagerly_scrub    = data.vsphere_virtual_machine.source_template.disks[0].eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.source_template.disks[0].thin_provisioned
   }
@@ -187,7 +200,7 @@ resource "vsphere_virtual_machine" "controlplane-nodes" {
 
   disk {
     label            = "disk0"
-    size             = data.vsphere_virtual_machine.source_template.disks[0].size
+    size             = var.guest_controlplane_disk
     eagerly_scrub    = data.vsphere_virtual_machine.source_template.disks[0].eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.source_template.disks[0].thin_provisioned
   }
@@ -246,7 +259,7 @@ resource "vsphere_virtual_machine" "worker-nodes" {
 
   disk {
     label            = "disk0"
-    size             = data.vsphere_virtual_machine.source_template.disks[0].size
+    size             = var.guest_worker_disk
     eagerly_scrub    = data.vsphere_virtual_machine.source_template.disks[0].eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.source_template.disks[0].thin_provisioned
   }
@@ -315,6 +328,14 @@ resource "local_file" "rke-config" {
   filename = "${path.module}/cluster.yml"
 }
 
+resource "digitalocean_record" "dns" {
+  domain = var.digitalocean_domain
+  type   = "A"
+  ttl    = 30
+  name   = "${var.guest_name_prefix}-tf-vsphere-rke"
+  value  = vsphere_virtual_machine.all-nodes[0].default_ip_address
+}
+
 output "all-nodes-nodes" {
   value = [for node in vsphere_virtual_machine.all-nodes : { name = node.name, ip = node.default_ip_address, user = var.guest_user }]
 }
@@ -329,4 +350,8 @@ output "rke-controlplane-nodes" {
 
 output "rke-worker-nodes" {
   value = [for node in vsphere_virtual_machine.worker-nodes : { name = node.name, ip = node.default_ip_address, user = var.guest_user }]
+}
+
+output "rancher-hostname" {
+  value = "${var.guest_name_prefix}-tf-vsphere-rke.${var.digitalocean_domain}"
 }

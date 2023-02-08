@@ -59,6 +59,12 @@ variable "guest_all_memory" {
   default     = "8192"
 }
 
+variable "guest_all_disk" {
+  description = "The size of the virtual machine's disk, in GB. Default: 40 GB."
+  default     = "40"
+}
+
+
 variable "guest_etcd_vcpu" {
   description = "The number of virtual processors to assign to this virtual machine. Default: 4."
   default     = "4"
@@ -67,6 +73,11 @@ variable "guest_etcd_vcpu" {
 variable "guest_etcd_memory" {
   description = "The size of the virtual machine's memory, in MB. Default: 8192 (8 GB)."
   default     = "8192"
+}
+
+variable "guest_etcd_disk" {
+  description = "The size of the virtual machine's disk, in GB. Default: 40 GB."
+  default     = "40"
 }
 
 variable "guest_controlplane_vcpu" {
@@ -79,6 +90,11 @@ variable "guest_controlplane_memory" {
   default     = "8192"
 }
 
+variable "guest_controlplane_disk" {
+  description = "The size of the virtual machine's disk, in GB. Default: 40 GB."
+  default     = "40"
+}
+
 variable "guest_worker_vcpu" {
   description = "The number of virtual processors to assign to this virtual machine. Default: 4."
   default     = "4"
@@ -87,6 +103,11 @@ variable "guest_worker_vcpu" {
 variable "guest_worker_memory" {
   description = "The size of the virtual machine's memory, in MB. Default: 8192 (8 GB)."
   default     = "8192"
+}
+
+variable "guest_worker_disk" {
+  description = "The size of the virtual machine's disk, in GB. Default: 40 GB."
+  default     = "40"
 }
 
 variable "guest_ssh_key" {
@@ -120,4 +141,11 @@ variable "docker_version" {
 
 variable "rke_version" {
   description = "rke version (RKE1 or RKE2)"
+}
+
+variable "do_token" {
+  description = "Digital ocean token to create DNS record."
+}
+variable "digitalocean_domain" {
+  description = "Digital ocean domain to add A record for first all role node"
 }
