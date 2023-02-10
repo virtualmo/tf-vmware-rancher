@@ -1,0 +1,12 @@
+nodes:
+- address: 10.156.233.164
+  user: root
+  role: [controlplane,worker,etcd]
+
+ssh_agent_auth: true
+
+services:
+  etcd:
+    snapshot: true
+    creation: 6h
+    retention: 24h

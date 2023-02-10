@@ -91,3 +91,13 @@ sudo ./rancher-install.sh -H <HOSTNAME> -v <VERSION>
 ```
 
 Option 2: As per [Rancher guide](https://ranchermanager.docs.rancher.com/v2.6/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster).
+
+
+### Helm Install on Debian based distributions
+```
+curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+sudo apt-get install apt-transport-https --yes
+echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+sudo apt-get install helm
+```
