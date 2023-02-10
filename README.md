@@ -84,6 +84,7 @@ chmod 600 .kube/config
 
 Option 1: use [axeal](https://github.com/axeal/tf-do-rke.git) rancher-install script (*make sure you have helm and kubeconfig*)
 ```
+sudo cp /etc/rancher/rke2/rke2.yaml kube_config_cluster.yml
 wget https://raw.githubusercontent.com/axeal/tf-do-rke/master/rancher-install.sh
 chmod +x rancher-install.sh
 sudo ./rancher-install.sh -H <HOSTNAME> -v <VERSION>
